@@ -8,40 +8,29 @@ export default function ProductForm() {
   const [message, setMessage] = useState({ type: '', text: '' });
   const navigate = useNavigate();
 
-  useEffect(() => {
-    // Verifica si la sesión está activa
-    const user = sessionStorage.getItem('user'); // Recupera el usuario desde sessionStorage
-    if (!user) {
-      navigate('/login'); // Si no hay usuario, redirige al login
-    }
-  }, [navigate]);
-
   const handleChange = (e) => {
     setProduct({ ...product, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    try {
-      // Verifica si hay usuario en sessionStorage
-      const user = JSON.parse(sessionStorage.getItem('user'));
-      if (!user) {
-        throw new Error('No estás autorizado para crear productos. Por favor, inicia sesión.');
-      }
 
+    try {
+      
       const response = await axios.post('http://localhost:3000/productos', product, {
-        withCredentials: true, // Para asegurarse de enviar las cookies si es necesario
-        headers: {
-          Authorization: `Bearer ${user.token}`, // Utiliza el token almacenado
-        },
+        withCredentials: true,
       });
 
       setMessage({ type: 'success', text: 'Producto creado con éxito' });
       setProduct({ nombre: '', precio: '' });
     } catch (error) {
-      const errorMsg = error.response?.data?.message || error.message || 'Error al crear el producto';
-      setMessage({ type: 'error', text: errorMsg });
+      
+      if (error.response?.status === 400) {
+        navigate('/'); // Redirige al login si no está autorizado
+      } else {
+        const errorMsg = error.response?.data?.message || error.message || 'Error al crear el producto';
+        setMessage({ type: 'error', text: errorMsg });
+      }
     }
   };
 
