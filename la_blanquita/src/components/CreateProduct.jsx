@@ -13,6 +13,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Alert from '@mui/material/Alert';
 import InventoryIcon from '@mui/icons-material/Inventory';
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
 const theme = createTheme();
 
@@ -45,6 +46,18 @@ export default function ProductForm() {
 
   return (
     <ThemeProvider theme={theme}>
+      <Button
+      variant="contained"
+      startIcon={<ArrowBackIcon />}
+      onClick={() => navigate("/dashboard")}
+      sx={{
+        position: "absolute", 
+        top: 10, 
+        left: 10, 
+      }}>
+      Volver
+      </Button>
+
       <Box
         sx={{
           backgroundImage: `url(${backgroundImage})`,
@@ -59,6 +72,7 @@ export default function ProductForm() {
         }}
       >
         <Container component="main" maxWidth="xs">
+          
           <CssBaseline />
           <Box
             sx={{

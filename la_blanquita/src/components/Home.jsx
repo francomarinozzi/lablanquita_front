@@ -8,7 +8,7 @@ import axios from 'axios';
 import backgroundImage from '../assets/background_1.jpg'
 import Button from '@mui/material/Button';
 import { useNavigate } from 'react-router-dom'
-
+import LogoutIcon from '@mui/icons-material/Logout';
 const theme = createTheme();
 
 const StyledItem = ({ product }) => (
@@ -27,10 +27,21 @@ const StyledItem = ({ product }) => (
   </Paper>
 );
 
+
+  
 export default function ProductStack() {
   const navigate = useNavigate();
 
   const [products, setProducts] = useState([]);
+
+  const handleLogout = async () => {
+    try {
+      await axios.post("http://localhost:3000/users/logout", {}, { withCredentials: true }); 
+      navigate("/"); 
+    } catch (error) {
+      console.error("Error al cerrar sesión", error);
+    }
+  }; 
 
   useEffect(() => {
     axios
@@ -44,22 +55,38 @@ export default function ProductStack() {
   }, []);
 
   return (
+    
     <ThemeProvider theme={theme}>
+      
       <Box
         sx={{
           backgroundImage: `url(${backgroundImage})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',
-          height: '100%', // Aseguramos que ocupe todo el alto de la página
+          height: '100%', 
           width: '100vw',
           display: 'flex',
           justifyContent: 'center',
-          alignItems: 'flex-start', // Cambio a 'flex-start' para que no se recorte al principio
+          alignItems: 'flex-start', 
           backgroundColor: '#f5f5f5',
-          overflowY: 'auto', // Habilitar desplazamiento en toda la página
+          overflowY: 'auto', 
         }}
       >
+        <Button
+          variant="contained"
+          color="error"
+          startIcon={<LogoutIcon />}
+          onClick={handleLogout}
+          sx={{
+            position: "absolute",
+            top: 10,
+            right: 10,
+          }}
+        >
+          Cerrar Sesión
+        </Button>
+        
         <Box
           sx={{
             backgroundColor: 'rgba(255, 255, 255, 0.9)',
@@ -69,8 +96,10 @@ export default function ProductStack() {
             maxWidth: 400,
             width: '100%',
             marginBottom: 2,
+            margin: "10px",
           }}
         >
+          
           <Typography color="black" variant="h5" textAlign="center" gutterBottom>
             Lista de Productos
           </Typography>
@@ -84,6 +113,7 @@ export default function ProductStack() {
             <Button variant="contained" onClick={() => navigate("/create")}>
               Editar producto
             </Button>
+            
           </Stack>
         </Box>
       </Box>

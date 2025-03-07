@@ -33,8 +33,9 @@ export default function SignIn() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(loginData),
-        credentials: 'include',  // Esto es importante para enviar las cookies de sesión
+        credentials: 'include',  
       });
+      
 
       const result = await response.json();
 
@@ -42,7 +43,7 @@ export default function SignIn() {
         throw new Error(result.message || 'Error al iniciar sesión');
       }
 
-      // Si el login es exitoso, redirige a /dashboard
+      
       console.log('Login exitoso:', result);
       navigate('/dashboard');
     } catch (error) {

@@ -37,7 +37,7 @@
         setError("");
         
         setTimeout(() => {
-          window.location.href = "/login";
+          window.location.href = "/";
         }, 2000);
       } catch (err) {
         setError(err.response?.data?.message || "Error al registrarse");
