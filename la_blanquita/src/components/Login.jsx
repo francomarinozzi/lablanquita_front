@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -18,7 +18,15 @@ const theme = createTheme();
 
 export default function SignIn() {
   const [errorMessage, setErrorMessage] = useState('');
+  const [rememberMe, setRememberMe] = useState(false);
   const navigate = useNavigate();
+
+  // Verifica el estado de "Recordar" al cargar el componente
+  useEffect(() => {
+    if (localStorage.getItem('rememberMe') === 'true') {
+      navigate('/dashboard');  // Redirige a dashboard si está "recordado"
+    }
+  }, [navigate]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -36,19 +44,29 @@ export default function SignIn() {
         credentials: 'include',  
       });
       
-
       const result = await response.json();
 
       if (!response.ok) {
         throw new Error(result.message || 'Error al iniciar sesión');
       }
 
-      
       console.log('Login exitoso:', result);
+
+      
+      if (rememberMe) {
+        localStorage.setItem('rememberMe', 'true');
+      } else {
+        localStorage.removeItem('rememberMe');
+      }
+
       navigate('/dashboard');
     } catch (error) {
       setErrorMessage(error.message);
     }
+  };
+
+  const handleRememberMeChange = (event) => {
+    setRememberMe(event.target.checked);
   };
 
   return (
@@ -112,7 +130,7 @@ export default function SignIn() {
                 autoComplete="current-password"
               />
               <FormControlLabel
-                control={<Checkbox value="remember" color="primary" />}
+                control={<Checkbox value="remember" color="primary" checked={rememberMe} onChange={handleRememberMeChange} />}
                 label="Recordar"
               />
               <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>

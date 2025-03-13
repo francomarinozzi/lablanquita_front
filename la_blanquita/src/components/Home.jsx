@@ -36,13 +36,15 @@ export default function ProductStack() {
 
   const handleLogout = async () => {
     try {
-      await axios.post("http://localhost:3000/users/logout", {}, { withCredentials: true }); 
-      navigate("/"); 
+      await axios.post("http://localhost:3000/users/logout", {}, { withCredentials: true });
+      localStorage.setItem('rememberMe', 'false');
+      console.log("rememberMe después de logout:", localStorage.getItem('rememberMe'));
+      navigate("/");
     } catch (error) {
-      console.error("Error al cerrar sesión", error);
+      console.error("Error al cerrar sesión", error.response || error.message);
     }
-  }; 
-
+  };
+  
   useEffect(() => {
     axios
       .get('http://localhost:3000/productos')
